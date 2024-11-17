@@ -1,0 +1,392 @@
+{
+  "id": "00000000-0000-0000-0000-000000000000",
+  "prevId": "",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.instituicoes": {
+      "name": "instituicoes",
+      "schema": "",
+      "columns": {
+        "co_ies": {
+          "name": "co_ies",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "no_ies": {
+          "name": "no_ies",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "sg_ies": {
+          "name": "sg_ies",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "sg_uf": {
+          "name": "sg_uf",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "no_municipio": {
+          "name": "no_municipio",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {},
+      "policies": {},
+      "isRLSEnabled": false
+    },
+    "public.instituicao_campus": {
+      "name": "instituicao_campus",
+      "schema": "",
+      "columns": {
+        "co_campus": {
+          "name": "co_campus",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "no_campus": {
+          "name": "no_campus",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "sg_uf_campus": {
+          "name": "sg_uf_campus",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "no_municipio_campus": {
+          "name": "no_municipio_campus",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "co_ies": {
+          "name": "co_ies",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {
+        "idx_instituicao_campus__co_ies": {
+          "name": "idx_instituicao_campus__co_ies",
+          "columns": [
+            {
+              "expression": "co_ies",
+              "asc": true,
+              "nulls": "last",
+              "opclass": "int4_ops",
+              "isExpression": false
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "fk_instituicao_campus__co_ies": {
+          "name": "fk_instituicao_campus__co_ies",
+          "tableFrom": "instituicao_campus",
+          "tableTo": "instituicoes",
+          "schemaTo": "public",
+          "columnsFrom": [
+            "co_ies"
+          ],
+          "columnsTo": [
+            "co_ies"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {},
+      "policies": {},
+      "isRLSEnabled": false
+    },
+    "public.ofertas": {
+      "name": "ofertas",
+      "schema": "",
+      "columns": {
+        "co_oferta": {
+          "name": "co_oferta",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "co_campus": {
+          "name": "co_campus",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "co_ies": {
+          "name": "co_ies",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "no_curso": {
+          "name": "no_curso",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "qt_vagas_sem1": {
+          "name": "qt_vagas_sem1",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "qt_vagas_sem2": {
+          "name": "qt_vagas_sem2",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "no_grau": {
+          "name": "no_grau",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "st_turno_m": {
+          "name": "st_turno_m",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "st_turno_v": {
+          "name": "st_turno_v",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "st_turno_n": {
+          "name": "st_turno_n",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "nu_peso_cn": {
+          "name": "nu_peso_cn",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "nu_peso_ch": {
+          "name": "nu_peso_ch",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "nu_peso_m": {
+          "name": "nu_peso_m",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "nu_peso_l": {
+          "name": "nu_peso_l",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "nu_peso_r": {
+          "name": "nu_peso_r",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {
+        "idx_ofertas__co_campus": {
+          "name": "idx_ofertas__co_campus",
+          "columns": [
+            {
+              "expression": "co_campus",
+              "asc": true,
+              "nulls": "last",
+              "opclass": "int4_ops",
+              "isExpression": false
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "idx_ofertas__co_ies": {
+          "name": "idx_ofertas__co_ies",
+          "columns": [
+            {
+              "expression": "co_ies",
+              "asc": true,
+              "nulls": "last",
+              "opclass": "int4_ops",
+              "isExpression": false
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "fk_ofertas__co_campus": {
+          "name": "fk_ofertas__co_campus",
+          "tableFrom": "ofertas",
+          "tableTo": "instituicao_campus",
+          "schemaTo": "public",
+          "columnsFrom": [
+            "co_campus"
+          ],
+          "columnsTo": [
+            "co_campus"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "fk_ofertas__co_ies": {
+          "name": "fk_ofertas__co_ies",
+          "tableFrom": "ofertas",
+          "tableTo": "instituicoes",
+          "schemaTo": "public",
+          "columnsFrom": [
+            "co_ies"
+          ],
+          "columnsTo": [
+            "co_ies"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {},
+      "policies": {},
+      "isRLSEnabled": false
+    },
+    "public.oferta_notas": {
+      "name": "oferta_notas",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "co_oferta": {
+          "name": "co_oferta",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "nu_mod_concorrencia": {
+          "name": "nu_mod_concorrencia",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "tp_mod_concorrencia": {
+          "name": "tp_mod_concorrencia",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "co_mod_concorrencia": {
+          "name": "co_mod_concorrencia",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "nu_nota_min": {
+          "name": "nu_nota_min",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "nu_nota_max": {
+          "name": "nu_nota_max",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {
+        "idx_oferta_notas__co_oferta": {
+          "name": "idx_oferta_notas__co_oferta",
+          "columns": [
+            {
+              "expression": "co_oferta",
+              "asc": true,
+              "nulls": "last",
+              "opclass": "int4_ops",
+              "isExpression": false
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "fk_oferta_notas__co_oferta": {
+          "name": "fk_oferta_notas__co_oferta",
+          "tableFrom": "oferta_notas",
+          "tableTo": "ofertas",
+          "schemaTo": "public",
+          "columnsFrom": [
+            "co_oferta"
+          ],
+          "columnsTo": [
+            "co_oferta"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {},
+      "policies": {},
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "schemas": {},
+    "tables": {},
+    "columns": {}
+  },
+  "internal": {
+    "tables": {}
+  }
+}
