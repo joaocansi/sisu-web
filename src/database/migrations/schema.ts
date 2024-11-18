@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import {
   pgTable,
   integer,
@@ -6,6 +7,7 @@ import {
   foreignKey,
   serial,
   doublePrecision,
+  pgMaterializedView,
 } from 'drizzle-orm/pg-core';
 
 export const instituicoes = pgTable('instituicoes', {
@@ -108,3 +110,5 @@ export const ofertaNotas = pgTable(
     };
   },
 );
+
+export const nuModConcorrencia = pgMaterializedView('nu_mod_concorrencia').as((qb) => qb.selectDistinctOn([ofertaNotas.nuModConcorrencia], { nu_mod_concorrencia: ofertaNotas.nuModConcorrencia }).from(ofertaNotas));

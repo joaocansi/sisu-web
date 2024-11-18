@@ -1,8 +1,14 @@
 import { Box, Container, Typography } from '@mui/material';
 import Image from 'next/image';
+import { ProfileProvider } from '@/contexts/profile';
+import Searcher from '@/components/searcher';
+import { getProfileCookie } from '@/actions/cookie';
 import EditProfile from '../components/edit-profile';
+import SnackbarContainer from '../components/snackbar-container';
 
 export default async function Home() {
+  const profile = await getProfileCookie();
+
   return (
     <Container>
       <Box my={2} component="header">
@@ -21,7 +27,12 @@ export default async function Home() {
           resultados de edições futuras.
         </Typography>
 
-        <EditProfile />
+        <SnackbarContainer>
+          <ProfileProvider initialProfile={profile}>
+            <EditProfile />
+            <Searcher />
+          </ProfileProvider>
+        </SnackbarContainer>
       </Box>
     </Container>
   );

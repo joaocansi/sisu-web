@@ -1,44 +1,41 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable react/jsx-props-no-spreading */
-import fetcher from '@/utils/fetcher';
+import { Profile, useProfile } from '@/contexts/profile';
 import { Edit } from '@mui/icons-material';
-import {
-  Autocomplete,
-  Box,
-  Button,
-  CircularProgress,
-  TextField,
-} from '@mui/material';
+import { Box, Button, TextField } from '@mui/material';
 import { Form, Formik } from 'formik';
-import useSWR from 'swr';
+import { useSnackbar } from 'notistack';
 
-// type EditProfileFormValuesType = {
-//   nota_cn: number;
-//   nota_ch: number;
-//   nota_l: number;
-//   nota_m: number;
-//   nota_r: number;
-//   nu_mod_concorrencia: string;
-// };
+type EditProfileFormProps = {
+  handleDialogClose: () => void;
+};
 
-export default function EditProfileForm() {
-  const { data, isLoading, error } = useSWR(
-    '/api/search?field=nu_mod_concorrencia',
-    fetcher,
-  );
+const initialProfileValues = {
+  nota_ch: 0,
+  nota_cn: 0,
+  nota_l: 0,
+  nota_m: 0,
+  nota_r: 0,
+} as Profile;
+
+export default function EditProfileForm({
+  handleDialogClose,
+}: EditProfileFormProps) {
+  const { enqueueSnackbar } = useSnackbar();
+  const { profile, setProfile } = useProfile();
+
+  const onSubmit = (values: Profile) => {
+    setProfile(values);
+    handleDialogClose();
+    enqueueSnackbar('Perfil salvo com sucesso!', {
+      variant: 'success',
+      autoHideDuration: 2000,
+    });
+  };
 
   return (
     <Box mt={2}>
       <Formik
-        initialValues={{
-          nota_cn: 0,
-          nota_ch: 0,
-          nota_l: 0,
-          nota_m: 0,
-          nota_r: 0,
-          nu_mod_concorrencia: '',
-        }}
-        onSubmit={async () => {}}
+        initialValues={profile || initialProfileValues}
+        onSubmit={onSubmit}
       >
         {({ values, handleChange }) => (
           <Form>
@@ -50,6 +47,13 @@ export default function EditProfileForm() {
                 label="Ciências da Natureza"
                 value={values.nota_cn}
                 onChange={handleChange}
+                slotProps={{
+                  htmlInput: {
+                    step: '0.01',
+                    max: 1000,
+                    min: 0,
+                  },
+                }}
               />
               <TextField
                 fullWidth
@@ -58,6 +62,13 @@ export default function EditProfileForm() {
                 label="Ciências Humanas"
                 value={values.nota_ch}
                 onChange={handleChange}
+                slotProps={{
+                  htmlInput: {
+                    step: '0.01',
+                    max: 1000,
+                    min: 0,
+                  },
+                }}
               />
               <TextField
                 fullWidth
@@ -66,6 +77,13 @@ export default function EditProfileForm() {
                 label="Linguagens"
                 value={values.nota_l}
                 onChange={handleChange}
+                slotProps={{
+                  htmlInput: {
+                    step: '0.01',
+                    max: 1000,
+                    min: 0,
+                  },
+                }}
               />
             </Box>
             <Box display="flex" gap={1} mt={1}>
@@ -76,6 +94,13 @@ export default function EditProfileForm() {
                 label="Matemática"
                 value={values.nota_m}
                 onChange={handleChange}
+                slotProps={{
+                  htmlInput: {
+                    step: '0.01',
+                    max: 1000,
+                    min: 0,
+                  },
+                }}
               />
               <TextField
                 fullWidth
@@ -84,38 +109,17 @@ export default function EditProfileForm() {
                 label="Redação"
                 value={values.nota_r}
                 onChange={handleChange}
-              />
-            </Box>
-            <Box mt={1}>
-              <Autocomplete
-                loading={isLoading}
-                fullWidth
-                getOptionLabel={(option: any) => option.nu_mod_concorrencia}
-                getOptionKey={(option: any) => option.nu_mod_concorrencia}
-                options={data && !error ? data : []}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    fullWidth
-                    label="Modalidade de Concorrência"
-                    slotProps={{
-                      input: {
-                        ...params.InputProps,
-                        endAdornment: (
-                          <>
-                            {isLoading ? (
-                              <CircularProgress color="inherit" size={20} />
-                            ) : null}
-                            {params.InputProps.endAdornment}
-                          </>
-                        ),
-                      },
-                    }}
-                  />
-                )}
+                slotProps={{
+                  htmlInput: {
+                    step: '0.01',
+                    max: 1000,
+                    min: 0,
+                  },
+                }}
               />
             </Box>
             <Button
+              type="submit"
               variant="contained"
               startIcon={<Edit />}
               fullWidth

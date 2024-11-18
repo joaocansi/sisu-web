@@ -2,8 +2,8 @@
 
 import { Button, Dialog, DialogContent, Typography } from '@mui/material';
 import { useState } from 'react';
-import EditProfileAlert from './edit-profile-alert';
 import EditProfileForm from './edit-profile-form';
+import EditProfileAlert from './edit-profile-alert';
 
 function EditProfile() {
   const [open, setOpen] = useState(false);
@@ -39,7 +39,7 @@ function EditProfile() {
             armazenados no browser, portanto, não altere nenhuma informação.
           </Typography>
 
-          <EditProfileForm />
+          <EditProfileForm handleDialogClose={handleClose} />
         </DialogContent>
       </Dialog>
     </>
