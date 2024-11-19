@@ -3,18 +3,16 @@
 import { saveProfileCookie } from '@/actions/cookie';
 import {
   createContext,
-  Dispatch,
   ReactNode,
-  SetStateAction,
+  useCallback,
   useContext,
-  useEffect,
   useMemo,
   useState,
 } from 'react';
 
 type ProfileContextProps = {
   profile: Profile | null;
-  setProfile: Dispatch<SetStateAction<Profile | null>>;
+  saveProfile: (profile: Profile) => Promise<void>;
 };
 
 export type Profile = {
@@ -37,20 +35,20 @@ export function ProfileProvider({
 }: ProfileProviderProps) {
   const [profile, setProfile] = useState<Profile | null>(initialProfile);
 
-  useEffect(() => {
-    (async () => {
-      if (profile) {
-        await saveProfileCookie(profile);
-      }
-    })();
-  }, [profile]);
+  const saveProfile = useCallback(
+    async (data: Profile) => {
+      setProfile(data);
+      await saveProfileCookie(data);
+    },
+    [setProfile],
+  );
 
   const data = useMemo(() => {
     return {
       profile,
-      setProfile,
+      saveProfile,
     };
-  }, [profile, setProfile]);
+  }, [profile, saveProfile]);
 
   return (
     <ProfileContext.Provider value={data}>{children}</ProfileContext.Provider>

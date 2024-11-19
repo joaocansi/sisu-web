@@ -17,20 +17,3 @@ export async function saveProfileCookie(data: Profile) {
     httpOnly: true,
   });
 }
-
-export async function getProfileCookie(): Promise<Profile | null> {
-  const cookieStore = await cookies();
-  if (!cookieStore.has('sisu-perfil')) {
-    return null;
-  }
-
-  try {
-    const data = cookieStore.get('sisu-perfil');
-    if (!data) throw Error();
-
-    const profile = JSON.parse(data.value);
-    return profile;
-  } catch (error) {
-    return null;
-  }
-}

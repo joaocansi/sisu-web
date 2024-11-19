@@ -1,10 +1,27 @@
 import { Box, Container, Typography } from '@mui/material';
 import Image from 'next/image';
-import { ProfileProvider } from '@/contexts/profile';
+import { Profile, ProfileProvider } from '@/contexts/profile';
 import Searcher from '@/components/searcher';
-import { getProfileCookie } from '@/actions/cookie';
+import { cookies } from 'next/headers';
 import EditProfile from '../components/edit-profile';
 import SnackbarContainer from '../components/snackbar-container';
+
+async function getProfileCookie(): Promise<Profile | null> {
+  const cookieStore = await cookies();
+  if (!cookieStore.has('sisu-perfil')) {
+    return null;
+  }
+
+  try {
+    const data = cookieStore.get('sisu-perfil');
+    if (!data) throw Error();
+
+    const profile = JSON.parse(data.value);
+    return profile;
+  } catch (error) {
+    return null;
+  }
+}
 
 export default async function Home() {
   const profile = await getProfileCookie();

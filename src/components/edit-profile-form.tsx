@@ -20,10 +20,10 @@ export default function EditProfileForm({
   handleDialogClose,
 }: EditProfileFormProps) {
   const { enqueueSnackbar } = useSnackbar();
-  const { profile, setProfile } = useProfile();
+  const { profile, saveProfile } = useProfile();
 
-  const onSubmit = (values: Profile) => {
-    setProfile(values);
+  const onSubmit = async (values: Profile) => {
+    await saveProfile(values);
     handleDialogClose();
     enqueueSnackbar('Perfil salvo com sucesso!', {
       variant: 'success',
@@ -104,7 +104,7 @@ export default function EditProfileForm({
               />
               <TextField
                 fullWidth
-                name="nota_cn"
+                name="nota_r"
                 type="number"
                 label="Redação"
                 value={values.nota_r}
