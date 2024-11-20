@@ -26,6 +26,9 @@ export default function Searcher() {
   const [sgUfs, setSgUf] = useState<SearchKeyValue[]>([]);
   const [isSgUfLoading, setIsSgUfLoading] = useState(false);
 
+  const [municipios, setMunicipios] = useState<SearchKeyValue[]>([]);
+  const [isMunicipiosLoading, setIsMunicipiosLoading] = useState(false);
+
   const formik = useFormik({
     initialValues: {
       no_curso: 0,
@@ -55,6 +58,16 @@ export default function Searcher() {
     });
     setIsSgUfLoading(false);
     setSgUf(data);
+  }
+
+  async function handleMunicipiosAutocompleteOpen() {
+    setIsMunicipiosLoading(true);
+    const data = await search({
+      field: 'no_municipio',
+      where: formik.values,
+    });
+    setIsMunicipiosLoading(false);
+    setMunicipios(data);
   }
 
   return (
@@ -113,13 +126,31 @@ export default function Searcher() {
               />
             )}
           />
-          <TextField
+          <Autocomplete
             fullWidth
-            type="text"
-            name="no_municipio"
-            label="Cidade"
-            value={formik.values.no_municipio}
-            onChange={formik.handleChange}
+            onOpen={handleMunicipiosAutocompleteOpen}
+            options={municipios}
+            getOptionLabel={(option: SearchKeyValue) => option.value}
+            onChange={(_, a) => formik.setFieldValue('no_municipio', a?.key)}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Município"
+                slotProps={{
+                  input: {
+                    ...params.InputProps,
+                    endAdornment: (
+                      <>
+                        {isMunicipiosLoading ? (
+                          <CircularProgress color="inherit" size={20} />
+                        ) : null}
+                        {params.InputProps.endAdornment}
+                      </>
+                    ),
+                  },
+                }}
+              />
+            )}
           />
         </Box>
         <Box display="flex" gap={1} mt={1}>
