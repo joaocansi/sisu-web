@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { Profile, ProfileProvider } from '@/contexts/profile';
 import Searcher from '@/components/searcher';
 import { cookies } from 'next/headers';
+import { DynamicSearchProvider } from '@/contexts/dynamic-search';
 import EditProfile from '../components/edit-profile';
 import SnackbarContainer from '../components/snackbar-container';
 
@@ -47,7 +48,10 @@ export default async function Home() {
         <SnackbarContainer>
           <ProfileProvider initialProfile={profile}>
             <EditProfile />
-            <Searcher />
+
+            <DynamicSearchProvider>
+              <Searcher />
+            </DynamicSearchProvider>
           </ProfileProvider>
         </SnackbarContainer>
       </Box>

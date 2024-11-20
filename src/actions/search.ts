@@ -5,17 +5,26 @@
 import db from '@/database';
 import {
   cursos,
+  instituicaoCampus,
   instituicaoLocalizacoes,
   instituicaoLocalizacoesUf,
+  instituicoes,
   ofertas,
 } from '@/database/migrations/schema';
 import { and, eq } from 'drizzle-orm';
 
 type QuerySearch = {
   field: string;
-  where: {
-    [key: string]: number;
-  };
+  where: QuerySearchWhere;
+};
+
+export type DynamicSearchKeyValue = {
+  key: number;
+  value: string;
+};
+
+type QuerySearchWhere = {
+  [key: string]: DynamicSearchKeyValue | null;
 };
 
 type SearchKeyValue = {
@@ -32,14 +41,20 @@ export default async function search(
   query: QuerySearch,
 ): Promise<SearchKeyValue> {
   switch (query.field) {
-    case 'no_curso':
-      return searchByCourse(query.where);
+    case 'co_curso':
+      return searchByCourse();
 
-    case 'sg_uf':
+    case 'co_ies_uf_localizacao':
       return searchByUf(query.where);
 
-    case 'no_municipio':
+    case 'co_ies_localizacao':
       return searchByMunicipio(query.where);
+
+    case 'co_ies':
+      return searchByIes(query.where);
+
+    case 'co_campus':
+      return searchByCampus(query.where);
 
     default:
       return [];
@@ -47,13 +62,11 @@ export default async function search(
 }
 
 /**
- * Search logic for the 'no_curso' field.
+ * Search logic for the 'co_curso' field.
  * @param where Conditions for filtering the courses.
  * @returns The distinct courses matching the criteria.
  */
-async function searchByCourse(where: {
-  [key: string]: number;
-}): Promise<SearchKeyValue> {
+async function searchByCourse(): Promise<SearchKeyValue> {
   const queryBuilder = db
     .selectDistinctOn([cursos.coCurso], {
       key: cursos.coCurso,
@@ -61,32 +74,15 @@ async function searchByCourse(where: {
     })
     .from(cursos);
 
-  if (where.sg_uf && where.sg_uf !== 0) {
-    queryBuilder
-      .innerJoin(ofertas, eq(ofertas.coCurso, cursos.coCurso))
-      .innerJoin(
-        instituicaoLocalizacoesUf,
-        and(
-          eq(
-            instituicaoLocalizacoesUf.coIesUfLocalizacao,
-            ofertas.coIesUfLocalizacao,
-          ),
-          eq(instituicaoLocalizacoesUf.coIesUfLocalizacao, where.sg_uf),
-        ),
-      );
-  }
-
   return queryBuilder;
 }
 
 /**
- * Search logic for the 'sg_uf' field.
+ * Search logic for the 'co_ies_uf_localizacao' field.
  * @param where Conditions for filtering by state UF.
  * @returns The distinct state UFs matching the criteria.
  */
-async function searchByUf(where: {
-  [key: string]: number;
-}): Promise<SearchKeyValue> {
+async function searchByUf(where: QuerySearchWhere): Promise<SearchKeyValue> {
   const queryBuilder = db
     .selectDistinctOn([instituicaoLocalizacoesUf.coIesUfLocalizacao], {
       key: instituicaoLocalizacoesUf.coIesUfLocalizacao,
@@ -94,35 +90,30 @@ async function searchByUf(where: {
     })
     .from(instituicaoLocalizacoesUf);
 
-  if (where.no_curso && where.no_curso !== 0) {
-    queryBuilder
-      .innerJoin(
-        ofertas,
+  if (where.co_curso) {
+    queryBuilder.innerJoin(
+      ofertas,
+      and(
         eq(
           ofertas.coIesUfLocalizacao,
           instituicaoLocalizacoesUf.coIesUfLocalizacao,
         ),
-      )
-      .innerJoin(
-        cursos,
-        and(
-          eq(cursos.coCurso, ofertas.coCurso),
-          eq(cursos.coCurso, where.no_curso),
-        ),
-      );
+        eq(ofertas.coCurso, where.co_curso.key),
+      ),
+    );
   }
 
   return queryBuilder;
 }
 
 /**
- * Search logic for the 'no_municipio' field.
+ * Search logic for the 'co_ies_localizacao' field.
  * @param where Conditions for filtering by state UF.
  * @returns The distinct state UFs matching the criteria.
  */
-async function searchByMunicipio(where: {
-  [key: string]: number;
-}): Promise<SearchKeyValue> {
+async function searchByMunicipio(
+  where: QuerySearchWhere,
+): Promise<SearchKeyValue> {
   const queryBuilder = db
     .selectDistinctOn([instituicaoLocalizacoes.coIesLocalizacao], {
       key: instituicaoLocalizacoes.coIesLocalizacao,
@@ -130,27 +121,110 @@ async function searchByMunicipio(where: {
     })
     .from(instituicaoLocalizacoes);
 
-  if (where.sg_uf && where.sg_uf !== 0) {
-    queryBuilder.innerJoin(
-      instituicaoLocalizacoesUf,
-      and(
-        eq(
-          instituicaoLocalizacoesUf.coIesUfLocalizacao,
-          instituicaoLocalizacoes.coIesUfLocalizacao,
-        ),
-        eq(instituicaoLocalizacoesUf.coIesUfLocalizacao, where.sg_uf),
+  if (where.co_ies_uf_localizacao) {
+    queryBuilder.where(
+      eq(
+        instituicaoLocalizacoes.coIesUfLocalizacao,
+        where.co_ies_uf_localizacao.key,
       ),
     );
   }
 
-  if (where.no_curso && where.no_curso !== 0) {
+  if (where.co_curso) {
     queryBuilder.innerJoin(
       ofertas,
       and(
         eq(ofertas.coIesLocalizacao, instituicaoLocalizacoes.coIesLocalizacao),
-        eq(ofertas.coCurso, where.no_curso),
+        eq(ofertas.coCurso, where.co_curso.key),
       ),
     );
+  }
+
+  return queryBuilder;
+}
+
+/**
+ * Search logic for the 'co_ies_localizacao' field.
+ * @param where Conditions for filtering by state UF.
+ * @returns The distinct state UFs matching the criteria.
+ */
+async function searchByIes(where: QuerySearchWhere): Promise<SearchKeyValue> {
+  const queryBuilder = db
+    .selectDistinctOn([instituicoes.noIes], {
+      key: instituicoes.coIes,
+      value: instituicoes.noIes,
+    })
+    .from(instituicoes);
+
+  if (where.co_curso) {
+    queryBuilder.innerJoin(
+      ofertas,
+      and(
+        eq(ofertas.coIesLocalizacao, instituicoes.coIesLocalizacao),
+        eq(ofertas.coCurso, where.co_curso.key),
+      ),
+    );
+  }
+
+  if (where.co_ies_localizacao) {
+    queryBuilder.where(
+      eq(instituicoes.coIesLocalizacao, where.co_ies_localizacao.key),
+    );
+    return queryBuilder;
+  }
+
+  if (where.co_ies_uf_localizacao) {
+    queryBuilder.where(
+      eq(instituicoes.coIesUfLocalizacao, where.co_ies_uf_localizacao.key),
+    );
+    return queryBuilder;
+  }
+
+  return queryBuilder;
+}
+
+/**
+ * Search logic for the 'co_ies_localizacao' field.
+ * @param where Conditions for filtering by state UF.
+ * @returns The distinct state UFs matching the criteria.
+ */
+async function searchByCampus(
+  where: QuerySearchWhere,
+): Promise<SearchKeyValue> {
+  const queryBuilder = db
+    .selectDistinctOn([instituicaoCampus.coCampus], {
+      key: instituicaoCampus.coCampus,
+      value: instituicaoCampus.noCampus,
+    })
+    .from(instituicaoCampus);
+
+  if (where.co_curso) {
+    queryBuilder.innerJoin(
+      ofertas,
+      and(
+        eq(ofertas.coCampus, instituicaoCampus.coCampus),
+        eq(ofertas.coCurso, where.co_curso.key),
+      ),
+    );
+  }
+
+  if (where.co_ies) {
+    queryBuilder.where(eq(instituicaoCampus.coIes, where.co_ies.key));
+    return queryBuilder;
+  }
+
+  if (where.co_ies_localizacao) {
+    queryBuilder.where(
+      eq(instituicaoCampus.coIesLocalizacao, where.co_ies_localizacao.key),
+    );
+    return queryBuilder;
+  }
+
+  if (where.co_ies_uf_localizacao) {
+    queryBuilder.where(
+      eq(instituicaoCampus.coIesUfLocalizacao, where.co_ies_uf_localizacao.key),
+    );
+    return queryBuilder;
   }
 
   return queryBuilder;
