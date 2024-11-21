@@ -10,7 +10,7 @@ export type SearchKeyValue = {
   value: string;
 };
 
-export default function Searcher() {
+export default function DynamicSearch() {
   const { formik } = useDynamicSearch();
 
   return (
