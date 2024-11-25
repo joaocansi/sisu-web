@@ -1,10 +1,8 @@
-import { Box, Container, Grid, Typography } from '@mui/material';
+import { Box, Container, Typography } from '@mui/material';
 import Image from 'next/image';
 import { Profile, ProfileProvider } from '@/contexts/profile';
 import { cookies } from 'next/headers';
-import { DynamicSearchProvider } from '@/contexts/dynamic-search';
 import DynamicSearch from '@/components/dynamic-search';
-import OfferCard from '@/components/offer-card';
 import EditProfile from '../components/edit-profile';
 import SnackbarContainer from '../components/snackbar-container';
 
@@ -49,21 +47,7 @@ export default async function Home() {
         <SnackbarContainer>
           <ProfileProvider initialProfile={profile}>
             <EditProfile />
-
-            <DynamicSearchProvider>
-              <DynamicSearch />
-
-              <Box mt={2}>
-                <Grid container spacing={2}>
-                  <Grid item xs={12} md={6}>
-                    <OfferCard />
-                  </Grid>
-                  <Grid item xs={12} md={6}>
-                    <OfferCard />
-                  </Grid>
-                </Grid>
-              </Box>
-            </DynamicSearchProvider>
+            <DynamicSearch />
           </ProfileProvider>
         </SnackbarContainer>
       </Box>

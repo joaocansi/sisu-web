@@ -14,8 +14,20 @@
           "primaryKey": true,
           "notNull": true
         },
+        "co_municipio": {
+          "name": "co_municipio",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
         "no_ies": {
           "name": "no_ies",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "no_municipio": {
+          "name": "no_municipio",
           "type": "text",
           "primaryKey": false,
           "notNull": true
@@ -28,12 +40,6 @@
         },
         "sg_uf": {
           "name": "sg_uf",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "no_municipio": {
-          "name": "no_municipio",
           "type": "text",
           "primaryKey": false,
           "notNull": true
@@ -57,14 +63,14 @@
           "primaryKey": true,
           "notNull": true
         },
-        "no_campus": {
-          "name": "no_campus",
-          "type": "text",
+        "co_ies": {
+          "name": "co_ies",
+          "type": "integer",
           "primaryKey": false,
           "notNull": true
         },
-        "sg_uf_campus": {
-          "name": "sg_uf_campus",
+        "co_municipio_campus": {
+          "name": "co_municipio_campus",
           "type": "text",
           "primaryKey": false,
           "notNull": true
@@ -75,9 +81,15 @@
           "primaryKey": false,
           "notNull": true
         },
-        "co_ies": {
-          "name": "co_ies",
-          "type": "integer",
+        "no_campus": {
+          "name": "no_campus",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "sg_uf_campus": {
+          "name": "sg_uf_campus",
+          "type": "text",
           "primaryKey": false,
           "notNull": true
         }
@@ -132,20 +144,26 @@
           "primaryKey": true,
           "notNull": true
         },
-        "co_campus": {
-          "name": "co_campus",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
         "co_ies": {
           "name": "co_ies",
           "type": "integer",
           "primaryKey": false,
           "notNull": true
         },
+        "co_campus": {
+          "name": "co_campus",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
         "no_curso": {
           "name": "no_curso",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "no_grau": {
+          "name": "no_grau",
           "type": "text",
           "primaryKey": false,
           "notNull": true
@@ -162,57 +180,51 @@
           "primaryKey": false,
           "notNull": true
         },
-        "no_grau": {
-          "name": "no_grau",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
         "st_turno_m": {
           "name": "st_turno_m",
-          "type": "text",
+          "type": "integer",
           "primaryKey": false,
           "notNull": true
         },
         "st_turno_v": {
           "name": "st_turno_v",
-          "type": "text",
+          "type": "integer",
           "primaryKey": false,
           "notNull": true
         },
         "st_turno_n": {
           "name": "st_turno_n",
-          "type": "text",
+          "type": "integer",
           "primaryKey": false,
           "notNull": true
         },
         "nu_peso_cn": {
           "name": "nu_peso_cn",
-          "type": "text",
+          "type": "double precision",
           "primaryKey": false,
           "notNull": true
         },
         "nu_peso_ch": {
           "name": "nu_peso_ch",
-          "type": "text",
+          "type": "double precision",
           "primaryKey": false,
           "notNull": true
         },
         "nu_peso_m": {
           "name": "nu_peso_m",
-          "type": "text",
+          "type": "double precision",
           "primaryKey": false,
           "notNull": true
         },
         "nu_peso_l": {
           "name": "nu_peso_l",
-          "type": "text",
+          "type": "double precision",
           "primaryKey": false,
           "notNull": true
         },
         "nu_peso_r": {
           "name": "nu_peso_r",
-          "type": "text",
+          "type": "double precision",
           "primaryKey": false,
           "notNull": true
         }
@@ -287,6 +299,31 @@
       "policies": {},
       "isRLSEnabled": false
     },
+    "public.mod_concorrencia": {
+      "name": "mod_concorrencia",
+      "schema": "",
+      "columns": {
+        "co_mod_concorrencia": {
+          "name": "co_mod_concorrencia",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "no_mod_concorrencia": {
+          "name": "no_mod_concorrencia",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {},
+      "policies": {},
+      "isRLSEnabled": false
+    },
     "public.oferta_notas": {
       "name": "oferta_notas",
       "schema": "",
@@ -300,18 +337,6 @@
         "co_oferta": {
           "name": "co_oferta",
           "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "nu_mod_concorrencia": {
-          "name": "nu_mod_concorrencia",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "tp_mod_concorrencia": {
-          "name": "tp_mod_concorrencia",
-          "type": "text",
           "primaryKey": false,
           "notNull": true
         },
@@ -335,6 +360,22 @@
         }
       },
       "indexes": {
+        "idx_oferta_notas__co_mod_concorrencia": {
+          "name": "idx_oferta_notas__co_mod_concorrencia",
+          "columns": [
+            {
+              "expression": "co_mod_concorrencia",
+              "asc": true,
+              "nulls": "last",
+              "opclass": "text_ops",
+              "isExpression": false
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
         "idx_oferta_notas__co_oferta": {
           "name": "idx_oferta_notas__co_oferta",
           "columns": [
@@ -353,6 +394,20 @@
         }
       },
       "foreignKeys": {
+        "fk_oferta_notas__co_mod_concorrencia": {
+          "name": "fk_oferta_notas__co_mod_concorrencia",
+          "tableFrom": "oferta_notas",
+          "tableTo": "mod_concorrencia",
+          "schemaTo": "public",
+          "columnsFrom": [
+            "co_mod_concorrencia"
+          ],
+          "columnsTo": [
+            "co_mod_concorrencia"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
         "fk_oferta_notas__co_oferta": {
           "name": "fk_oferta_notas__co_oferta",
           "tableFrom": "oferta_notas",
